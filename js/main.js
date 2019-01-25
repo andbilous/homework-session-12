@@ -1,6 +1,6 @@
 const dataToRender = data.slice(0);
-let pictureCount=0;
-let renderType=0;
+let pictureCount = 0;
+let renderType = 0;
 
 const lineSelector = document.getElementById("line-selector");
 const typeSelector = document.getElementById("type-selector");
@@ -42,42 +42,41 @@ function fetchData() {
   });
   return resultData;
 }
-function transformDate(date){
-return moment(date).format("YYYY/MM/DD");
-
+function transformDate(date) {
+  return moment(date).format("YYYY/MM/DD");
 }
 function printResult(data, renderType, count) {
-  switch (count){
+  switch (count) {
     case 0:
-    renderingData = data.slice(0);
-    break;
+      renderingData = data.slice(0);
+      break;
     case 1:
-    renderingData = data.slice(0, 3);
-    break;
+      renderingData = data.slice(0, 3);
+      break;
     case 2:
-    renderingData = data.slice(0, 6);
-    break;
+      renderingData = data.slice(0, 6);
+      break;
   }
-    switch (renderType) {
-      case 1:
-        replaceRender(renderingData);
-        break;
-      case 2:
-        templateRender(renderingData);
-        break;
-      case 3:
-        createElementRender(renderingData);
-        break;
-      default:
-        console.log("error");
-    }
+  switch (renderType) {
+    case 1:
+      replaceRender(renderingData);
+      break;
+    case 2:
+      templateRender(renderingData);
+      break;
+    case 3:
+      createElementRender(renderingData);
+      break;
+    default:
+      console.log("error");
+  }
 }
 function replaceRender(renderingData) {
   let resultHTML;
- 
-  renderingData.forEach((item)=>{
+
+  renderingData.forEach(item => {
     let replaceItemTemplate =
-    '<div class="col-sm-3 col-xs-6">\
+      '<div class="col-sm-3 col-xs-6">\
     <img src="$url" alt="$name" class="img-thumbnail">\
     <div class="info-wrapper">\
     <div class="text-muted">$name</div>\
@@ -85,11 +84,11 @@ function replaceRender(renderingData) {
     <div class="text-muted">$date</div>\
     </div>\
     </div>';
-     resultHTML = replaceItemTemplate
-    .replace(/\$name/gi, item.name)
-    .replace("$url", "http://"+ item.url)
-    .replace("$description", item.description)
-    .replace("$date", transformDate(item.date));
+    resultHTML = replaceItemTemplate
+      .replace(/\$name/gi, item.name)
+      .replace("$url", "http://" + item.url)
+      .replace("$description", item.description)
+      .replace("$date", transformDate(item.date));
     firstBlock.innerHTML += resultHTML;
   });
   document.querySelector(".first-group").classList.remove("hide");
@@ -97,43 +96,42 @@ function replaceRender(renderingData) {
 }
 
 function createElementRender(renderingData) {
-  renderingData.forEach((item) =>{
-    let itemDiv = document.createElement('div');
+  renderingData.forEach(item => {
+    let itemDiv = document.createElement("div");
     thirdBlock.appendChild(itemDiv);
-    itemDiv.classList.add("col-sm-3","col-xs-6");
+    itemDiv.classList.add("col-sm-3", "col-xs-6");
     let itemImage = document.createElement("img");
-    itemImage.src = "http://"+item.url;
-    itemImage.alt=item.name;
-  itemImage.classList.add("img-thumbnail");
-    
-    let infoWrapper= document.createElement('div');
+    itemImage.src = "http://" + item.url;
+    itemImage.alt = item.name;
+    itemImage.classList.add("img-thumbnail");
 
-    let itemNameDiv= document.createElement('div');
+    let infoWrapper = document.createElement("div");
+
+    let itemNameDiv = document.createElement("div");
     itemNameDiv.classList.add("text-muted");
-    itemNameDiv.innerText=item.name;
-    let itemNameDescription= document.createElement('div');
-    itemNameDescription.classList.add("text-muted","top-padding");
-    itemNameDescription.innerText=item.description;
-    let itemNameDate= document.createElement('div');
+    itemNameDiv.innerText = item.name;
+    let itemNameDescription = document.createElement("div");
+    itemNameDescription.classList.add("text-muted", "top-padding");
+    itemNameDescription.innerText = item.description;
+    let itemNameDate = document.createElement("div");
     itemNameDate.classList.add("text-muted");
-    itemNameDate.innerText=transformDate(item.date);;
+    itemNameDate.innerText = transformDate(item.date);
     infoWrapper.appendChild(itemNameDiv);
     infoWrapper.appendChild(itemNameDescription);
     infoWrapper.appendChild(itemNameDate);
-   
-   itemDiv.appendChild(itemImage);
+
+    itemDiv.appendChild(itemImage);
     itemDiv.appendChild(infoWrapper);
-    
-    });
-    document.querySelector(".third-group").classList.remove("hide");
+  });
+  document.querySelector(".third-group").classList.remove("hide");
   document.querySelector(".third-group").classList.add("show");
 }
 
 function templateRender(renderingData) {
   console.log(renderingData);
   let secondItemTemplate;
-  renderingData.forEach((item) =>{
-    item.url="http://"+item.url;
+  renderingData.forEach(item => {
+    item.url = "http://" + item.url;
 
     secondItemTemplate = `<div class="col-sm-3 col-xs-6">\
     <img src="${item.url}" alt="${item.name}" class="img-thumbnail">\
@@ -143,16 +141,16 @@ function templateRender(renderingData) {
         <div class="text-muted">${transformDate(item.date)}</div>\
     </div>\
     </div>`;
-    secondBlock.innerHTML+=secondItemTemplate;
+    secondBlock.innerHTML += secondItemTemplate;
   });
-  
+
   document.querySelector(".second-group").classList.remove("hide");
   document.querySelector(".second-group").classList.add("show");
 }
 
 function run() {
   resetView();
- 
+
   let preparedData = fetchData();
   printResult(preparedData, renderType, pictureCount);
 }
