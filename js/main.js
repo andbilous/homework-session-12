@@ -23,17 +23,8 @@ let btn = document.getElementById("play"),
   secondBlock = document.getElementById("second-line"),
   thirdBlock = document.getElementById("third-line");
 
-function resetView() {
-  document.querySelector(".first-group").classList.remove("show");
-  document.querySelector(".second-group").classList.remove("show");
-  document.querySelector(".third-group").classList.remove("show");
-  document.querySelector(".first-group").classList.add("hide");
-  document.querySelector(".second-group").classList.add("hide");
-  document.querySelector(".third-group").classList.add("hide");
-}
-
 function fetchData() {
-  let resultData = dataToRender.splice("");
+  let resultData = dataToRender.slice(0);
   resultData.forEach(function(item) {
     item.name = item.name.toUpperCase();
     if (item.description.length > 15) {
@@ -86,13 +77,14 @@ function replaceRender(renderingData) {
     </div>';
     resultHTML = replaceItemTemplate
       .replace(/\$name/gi, item.name)
-      .replace("$url", "http://" + item.url)
+      .replace("$url", "http://" + item.url.replace("http//", ""))
       .replace("$description", item.description)
       .replace("$date", transformDate(item.date));
     firstBlock.innerHTML += resultHTML;
   });
-  document.querySelector(".first-group").classList.remove("hide");
   document.querySelector(".first-group").classList.add("show");
+  document.querySelector(".second-group").classList.remove("show");
+  document.querySelector(".third-group").classList.remove("show");
 }
 
 function createElementRender(renderingData) {
@@ -101,7 +93,7 @@ function createElementRender(renderingData) {
     thirdBlock.appendChild(itemDiv);
     itemDiv.classList.add("col-sm-3", "col-xs-6");
     let itemImage = document.createElement("img");
-    itemImage.src = "http://" + item.url;
+    itemImage.src = "http://" + item.url.replace("http//", "");
     itemImage.alt = item.name;
     itemImage.classList.add("img-thumbnail");
 
@@ -123,16 +115,16 @@ function createElementRender(renderingData) {
     itemDiv.appendChild(itemImage);
     itemDiv.appendChild(infoWrapper);
   });
-  document.querySelector(".third-group").classList.remove("hide");
   document.querySelector(".third-group").classList.add("show");
+  document.querySelector(".first-group").classList.remove("show");
+  document.querySelector(".second-group").classList.remove("show");
 }
 
 function templateRender(renderingData) {
   console.log(renderingData);
   let secondItemTemplate;
   renderingData.forEach(item => {
-    item.url = "http://" + item.url;
-
+    item.url = "http://" + item.url.replace("http//", "");
     secondItemTemplate = `<div class="col-sm-3 col-xs-6">\
     <img src="${item.url}" alt="${item.name}" class="img-thumbnail">\
     <div class="info-wrapper">\
@@ -143,14 +135,12 @@ function templateRender(renderingData) {
     </div>`;
     secondBlock.innerHTML += secondItemTemplate;
   });
-
-  document.querySelector(".second-group").classList.remove("hide");
+  document.querySelector(".first-group").classList.remove("show");
+  document.querySelector(".third-group").classList.remove("show");
   document.querySelector(".second-group").classList.add("show");
 }
 
 function run() {
-  resetView();
-
   let preparedData = fetchData();
   printResult(preparedData, renderType, pictureCount);
 }
