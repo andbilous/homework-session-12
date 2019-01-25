@@ -36,6 +36,11 @@ function fetchData() {
 function transformDate(date) {
   return moment(date).format("YYYY/MM/DD");
 }
+function transformUrl(url) {
+  let newUrl = url.replace("http//", "");
+  newUrl = "http://" + newUrl;
+  return newUrl;
+}
 function printResult(data, renderType, count) {
   switch (count) {
     case 0:
@@ -77,7 +82,7 @@ function replaceRender(renderingData) {
     </div>';
     resultHTML = replaceItemTemplate
       .replace(/\$name/gi, item.name)
-      .replace("$url", "http://" + item.url.replace("http//", ""))
+      .replace("$url", transformUrl(item.url))
       .replace("$description", item.description)
       .replace("$date", transformDate(item.date));
     firstBlock.innerHTML += resultHTML;
@@ -93,7 +98,7 @@ function createElementRender(renderingData) {
     thirdBlock.appendChild(itemDiv);
     itemDiv.classList.add("col-sm-3", "col-xs-6");
     let itemImage = document.createElement("img");
-    itemImage.src = "http://" + item.url.replace("http//", "");
+    itemImage.src = transformUrl(item.url);
     itemImage.alt = item.name;
     itemImage.classList.add("img-thumbnail");
 
@@ -121,12 +126,13 @@ function createElementRender(renderingData) {
 }
 
 function templateRender(renderingData) {
-  console.log(renderingData);
   let secondItemTemplate;
   renderingData.forEach(item => {
-    item.url = "http://" + item.url.replace("http//", "");
+    item.url = item.url;
     secondItemTemplate = `<div class="col-sm-3 col-xs-6">\
-    <img src="${item.url}" alt="${item.name}" class="img-thumbnail">\
+    <img src="${transformUrl(item.url)}" alt="${
+      item.name
+    }" class="img-thumbnail">\
     <div class="info-wrapper">\
         <div class="text-muted">${item.name}</div>\
         <div class="text-muted top-padding">${item.description}</div>\
