@@ -30,6 +30,8 @@ function fetchData() {
     if (item.description.length > 15) {
       item.description = item.description.slice(0, 15) + "...";
     }
+    item.date = transformDate(item.date);
+    item.url = transformUrl(item.url);
   });
   return resultData;
 }
@@ -37,9 +39,8 @@ function transformDate(date) {
   return moment(date).format("YYYY/MM/DD");
 }
 function transformUrl(url) {
-  let newUrl = url.replace("http//", "");
-  newUrl = "http://" + newUrl;
-  return newUrl;
+  if (url.startsWith("http//")) return url;
+  return "http//:" + url;
 }
 function printResult(data, renderType, count) {
   switch (count) {
@@ -68,6 +69,7 @@ function printResult(data, renderType, count) {
   }
 }
 function replaceRender(renderingData) {
+  let itemHTML;
   let resultHTML;
 
   renderingData.forEach(item => {
@@ -80,22 +82,25 @@ function replaceRender(renderingData) {
     <div class="text-muted">$date</div>\
     </div>\
     </div>';
-    resultHTML = replaceItemTemplate
+    itemHTML = replaceItemTemplate
       .replace(/\$name/gi, item.name)
       .replace("$url", transformUrl(item.url))
       .replace("$description", item.description)
       .replace("$date", transformDate(item.date));
-    firstBlock.innerHTML += resultHTML;
+    resultHTML += itemHTML;
   });
+  firstBlock.innerHTML = resultHTML;
   document.querySelector(".first-group").classList.add("show");
   document.querySelector(".second-group").classList.remove("show");
   document.querySelector(".third-group").classList.remove("show");
 }
 
 function createElementRender(renderingData) {
+  let temporaryHTML = document.createElement("div");
+
   renderingData.forEach(item => {
     let itemDiv = document.createElement("div");
-    thirdBlock.appendChild(itemDiv);
+    temporaryHTML.appendChild(itemDiv);
     itemDiv.classList.add("col-sm-3", "col-xs-6");
     let itemImage = document.createElement("img");
     itemImage.src = transformUrl(item.url);
@@ -112,7 +117,7 @@ function createElementRender(renderingData) {
     itemNameDescription.innerText = item.description;
     let itemNameDate = document.createElement("div");
     itemNameDate.classList.add("text-muted");
-    itemNameDate.innerText = transformDate(item.date);
+    itemNameDate.innerText = item.date;
     infoWrapper.appendChild(itemNameDiv);
     infoWrapper.appendChild(itemNameDescription);
     infoWrapper.appendChild(itemNameDate);
@@ -120,6 +125,7 @@ function createElementRender(renderingData) {
     itemDiv.appendChild(itemImage);
     itemDiv.appendChild(infoWrapper);
   });
+  thirdBlock.innerHTML = temporaryHTML.innerHTML;
   document.querySelector(".third-group").classList.add("show");
   document.querySelector(".first-group").classList.remove("show");
   document.querySelector(".second-group").classList.remove("show");
@@ -127,20 +133,20 @@ function createElementRender(renderingData) {
 
 function templateRender(renderingData) {
   let secondItemTemplate;
+  let resultHTML;
   renderingData.forEach(item => {
     item.url = item.url;
     secondItemTemplate = `<div class="col-sm-3 col-xs-6">\
-    <img src="${transformUrl(item.url)}" alt="${
-      item.name
-    }" class="img-thumbnail">\
+    <img src="${item.url}" alt="${item.name}" class="img-thumbnail">\
     <div class="info-wrapper">\
         <div class="text-muted">${item.name}</div>\
         <div class="text-muted top-padding">${item.description}</div>\
-        <div class="text-muted">${transformDate(item.date)}</div>\
+        <div class="text-muted">${item.date}</div>\
     </div>\
     </div>`;
-    secondBlock.innerHTML += secondItemTemplate;
+    resultHTML += secondItemTemplate;
   });
+  secondBlock.innerHTML = resultHTML;
   document.querySelector(".first-group").classList.remove("show");
   document.querySelector(".third-group").classList.remove("show");
   document.querySelector(".second-group").classList.add("show");
