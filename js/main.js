@@ -39,8 +39,8 @@ function transformDate(date) {
   return moment(date).format("YYYY/MM/DD");
 }
 function transformUrl(url) {
-  if (url.startsWith("http//")) return url;
-  return "http://" + url;
+  if (url.startsWith('http://')) return url;
+  return 'http://' + url;
 }
 function printResult(data, renderType, count) {
   switch (count) {
