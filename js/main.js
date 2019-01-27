@@ -40,7 +40,7 @@ function transformDate(date) {
 }
 function transformUrl(url) {
   if (url.startsWith("http//")) return url;
-  return "http//:" + url;
+  return "http://" + url;
 }
 function printResult(data, renderType, count) {
   switch (count) {
